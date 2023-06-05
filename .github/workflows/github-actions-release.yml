@@ -37,8 +37,6 @@ jobs:
         go-version: '^1.19.2'
     - run: |
         go version
-        go mod init ${GITHUB_REPOSITORY}
-        go mod tidy
         go build -o k8s-value-scanner -ldflags "-X main.Version=${GITHUB_REF_NAME} -X main.BuiltBy=github-actions" main.go
     - run: git version
     - run: git branch

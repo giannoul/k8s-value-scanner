@@ -1,0 +1,11 @@
+FROM golang:1.19-bullseye
+
+RUN apt-get update \
+ && apt-get install -y sudo
+ 
+COPY entrypoint.dev /usr/local/bin/
+WORKDIR /code
+
+
+ENTRYPOINT ["entrypoint.dev"]
+CMD bash

@@ -1,0 +1,25 @@
+#!/bin/sh
+set -e
+
+uid=$(stat -c '%u' /code)
+gid=$(stat -c '%g' /code)
+
+# home may be modified from multiple sources
+# try to normalize before using it in paths below
+HOME=/home/gopher
+REALHOME=$(realpath $HOME)
+
+mkdir -p $REALHOME
+chown $uid:$gid $REALHOME
+GOPHERPASS=gopher
+
+echo "gopher:$(openssl passwd -crypt $GOPHERPASS)::0:::::" >> /etc/shadow
+echo "gopher ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+echo "gopher:x:${uid}:${gid}:Gopher User:${REALHOME}:/bin/bash" >> /etc/passwd
+echo "gopher:x:${gid}:" >> /etc/group
+
+
+ 
+
+# stop running as root to preserve volume mount file ownership
+exec runuser -u gopher -- "$@"

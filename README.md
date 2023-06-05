@@ -1,10 +1,23 @@
 # k8s-value-scanner
 A showcase of a value scanner within Kubernetes secrets, configmaps and env vars in all kinds of workloads.
 
+## Where is what
+```
+.
+├── cmd
+├── internal
+│   ├── auth
+│   └── scanner
+├── kind-k8s
+├── test-manifests
+└── toolbox
+```
+The `golang` code is under `cmd` and `internal` directories. The `kind-k8s`, `test-manifests` and `toolbox` are used during dev.
 
 ## How to use
 ```
 $ k8s-value-scanner --help
+
 k8s-value-scanner will search your entire cluster for the value you will give as argument
 
 Usage:
@@ -24,6 +37,7 @@ Flags:
 Example:
 ```
 $ k8s-value-scanner scan sEaRchFoRmE1234
+
 +-------------+-----------------------------------+-----------+------------------+--------------------------------+
 |    KIND     |               NAME                | NAMESPACE |       KEY        |             VALUE              |
 +-------------+-----------------------------------+-----------+------------------+--------------------------------+
@@ -62,4 +76,23 @@ $ k8s-value-scanner scan sEaRchFoRmE1234
 +-------------+-----------------------------------+-----------+------------------+--------------------------------+
 | Secret      | secret-match-string-data          | test      | SECRETVAR        | sEaRchFoRmE1234                |
 +-------------+-----------------------------------+-----------+------------------+--------------------------------+
+```
+
+## How to dev
+Requirements:
+* [Docker](https://www.docker.com/)
+* [Kind]](https://kind.sigs.k8s.io/)
+
+In order to make the dev process easier, you can use the following commands:
+```
+$ make kind-create
+$ make apply-test-manifests
+$ make dev-toolbox
+```
+The above commands will start a local [kind k8s cluster](https://kind.sigs.k8s.io/), apply some test manifests and start a container that you can use in order to code without even installing golang in your machine.
+
+Upon finishing your dev process, clear everything via:
+```
+$ make dev-toolbox-destroy
+$ make kind-delete
 ```

@@ -1,7 +1,7 @@
 PWD           = $(shell pwd)
-home		  = $(shell )
+home	      = $(shell )
 cluster_name  = $(or $(shell printenv KIND_CLUSTER), local-sandbox)
-dev_toolbox   = k8s-value-finder-dev
+dev_toolbox   = k8s-value-scanner-dev
 
 .SILENT: .use-context-kind
 
@@ -17,6 +17,7 @@ kind-create:
 	  cluster \
 	  --name $(cluster_name) \
 	  --config kind-k8s/kind.conf
+	$(MAKE) .use-context-kind
 
 .PHONY: kind-delete
 kind-delete:
@@ -38,6 +39,10 @@ dev-toolbox: .build-dev-toolbox
 	docker cp $(HOME)/.kube/config $(dev_toolbox):/home/gopher/.kube/config
 	docker exec -ti $(dev_toolbox) bash
 
+.PHONY: dev-toolbox-destroy
+dev-toolbox-destroy:
+	docker stop $(dev_toolbox) 
+	
 .PHONY: apply-test-manifests
 apply-test-manifests:
 	kubectl apply -f test-manifests
